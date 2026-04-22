@@ -71,6 +71,41 @@ Deve mostrar ✅ TODAS AS DEPENDÊNCIAS ESTÃO INSTALADAS!
 
 ---
 
+## 🚀 Sequência Completa para Começar
+
+```bash
+# 1. Clonar o repositório
+git clone https://github.com/PedroToazza/jarvis.git
+cd jarvis
+
+# 2. Verificar dependências
+python3 check-requirements.py
+
+# 3. Se faltarem, instalar
+pip install -r requirements.txt
+
+# 4. No Fedora/RHEL (instalar do sistema)
+sudo dnf install python3-tkinter python3-pyaudio
+
+# 5. Verificar novamente
+python3 check-requirements.py
+
+# 6. Configurar as APIs
+cp .env.example .env
+# Edite .env com suas chaves (veja seção "🔐 Configuração de APIs" abaixo)
+
+# 7. Executar o Jarvis
+python main.py
+
+# 8. (Opcional) Compilar para executável
+python build.py
+# Executável fica em dist/Jarvis (ou dist\Jarvis.exe no Windows)
+```
+
+**Pronto!** O Jarvis está online e pronto para receber comandos por voz 🎤
+
+---
+
 ## 🚀 Instalação (passo a passo)
 
 ### 1. Clonar o repositório
