@@ -31,37 +31,55 @@ jarvis/
 
 ---
 
-## 🚀 Instalação (passo a passo)
+## ⚠️ PRIMEIROS PASSOS — OBRIGATÓRIO
 
-### 1. Pré-requisitos
-
-- **Python 3.10+** — https://www.python.org/downloads/  
-  *(marque "Add Python to PATH" na instalação)*
-- **Git** — para clonar o repositório
-
-**Dependências do sistema (opcional, para desenvolvimento local):**
-- **Windows:** Microsoft C++ Build Tools (https://visualstudio.microsoft.com/visual-cpp-build-tools/)
-- **Linux:** `sudo dnf install python3-tkinter` (Fedora) ou `sudo apt install python3-tk` (Ubuntu)
-- **macOS:** já incluído
-
-### 2. Instalar o Jarvis
+**Antes de qualquer coisa, instale as dependências:**
 
 ```bash
-# Clonar o repositório
-git clone https://github.com/PedroToazza/jarvis.git
-cd jarvis
-
-# Instalar dependências
 pip install -r requirements.txt
-
-# Criar arquivo .env com suas credenciais
-cp .env.example .env
-# Abra .env e preencha com suas chaves de API
 ```
 
-### 3. Configurar as APIs
+**No Fedora, também instale:**
 
-Veja a seção **"🔐 Configuração de APIs (Segura)"** abaixo para obter suas chaves.
+```bash
+sudo dnf install python3-tkinter python3-pyaudio
+```
+
+**No Ubuntu/Debian:**
+
+```bash
+sudo apt install python3-tkinter python3-pyaudio python3-pip
+```
+
+> Se não instalar `requirements.txt`, nada funcionará! O build.py vai falhar, main.py vai falhar, tudo vai falhar.
+
+---
+
+## 🚀 Instalação (passo a passo)
+
+### 1. Clonar o repositório
+
+```bash
+git clone https://github.com/PedroToazza/jarvis.git
+cd jarvis
+```
+
+### 2. Instalar dependências (OBRIGATÓRIO)
+
+```bash
+pip install -r requirements.txt
+```
+
+**Isso já resolve tudo:** SpeechRecognition, edge-tts, pyttsx3, google-generativeai, customtkinter, etc.
+
+### 3. Criar arquivo `.env` com suas credenciais
+
+```bash
+cp .env.example .env
+# Edite .env e preencha GEMINI_API_KEY, SPOTIFY_CLIENT_ID, etc
+```
+
+Veja a seção **"🔐 Configuração de APIs (Segura)"** abaixo para detalhes.
 
 ### 4. Executar
 
@@ -109,16 +127,17 @@ Bata **duas palmas** rapidamente → Jarvis toca **Back in Black** do AC/DC no S
 
 ## 📦 Compilar para Executável
 
-Para gerar um executável standalone (não precisa de Python instalado), use o script multiplataforma:
+> ⚠️ **PRÉ-REQUISITO:** Execute `pip install -r requirements.txt` ANTES de tentar fazer build!
 
-**Windows, macOS ou Linux:**
+Use o script multiplataforma:
 
 ```bash
 python build.py
 ```
 
 O script vai:
-- ✅ Instalar PyInstaller automaticamente (se necessário)
+- ✅ Verificar se requirements.txt foi instalado
+- ✅ Instalar PyInstaller automaticamente
 - ✅ Compilar um executável único para seu SO
 - ✅ Copiar arquivos de configuração para a pasta `dist/`
 
@@ -127,13 +146,13 @@ O script vai:
 - macOS: `dist/Jarvis`
 - Linux: `dist/Jarvis`
 
-**Próxima etapa:**
+**Como usar o executável:**
 1. Navegue para a pasta `dist/`
-2. Crie um arquivo `.env` (copie e edite `.env.example`)
+2. Crie um arquivo `.env` (copie `.env.example`)
 3. Preencha com suas credenciais da API
 4. Execute o Jarvis!
 
-> **Dica:** O arquivo `.env` deve estar na mesma pasta do executável para que as credenciais sejam carregadas.
+> **Importante:** O `.env` deve estar na mesma pasta do executável.
 
 ---
 
