@@ -1,0 +1,12 @@
+.env
+.spotify_cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+*.spec
+api key gemini.txt
+api key voz.txt
+apikey.txt
