@@ -33,13 +33,21 @@ jarvis/
 
 ## ⚠️ PRIMEIROS PASSOS — OBRIGATÓRIO
 
-**Antes de qualquer coisa, instale as dependências:**
+**Passo 1:** Verifique se as dependências estão instaladas:
+
+```bash
+python3 check-requirements.py
+```
+
+Se mostrar ❌, continue no Passo 2.
+
+**Passo 2:** Instale as dependências:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-**No Fedora, também instale:**
+**No Fedora, também instale (sistema):**
 
 ```bash
 sudo dnf install python3-tkinter python3-pyaudio
@@ -51,7 +59,15 @@ sudo dnf install python3-tkinter python3-pyaudio
 sudo apt install python3-tkinter python3-pyaudio python3-pip
 ```
 
-> Se não instalar `requirements.txt`, nada funcionará! O build.py vai falhar, main.py vai falhar, tudo vai falhar.
+**Passo 3:** Verifique novamente:
+
+```bash
+python3 check-requirements.py
+```
+
+Deve mostrar ✅ TODAS AS DEPENDÊNCIAS ESTÃO INSTALADAS!
+
+> Se não fizer isso, nada funcionará! O build.py vai falhar, main.py vai falhar, tudo vai falhar.
 
 ---
 
