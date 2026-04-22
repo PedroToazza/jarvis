@@ -22,7 +22,12 @@ try:
 except ImportError:
     _EDGE_OK = False
 
-import pyttsx3
+try:
+    import pyttsx3
+    _PYTTSX3_OK = True
+except ImportError:
+    pyttsx3 = None
+    _PYTTSX3_OK = False
 
 
 class TTSEngine:
@@ -30,19 +35,30 @@ class TTSEngine:
         self.shared_state = shared_state
         self._lock = threading.Lock()
         self._use_edge = _EDGE_OK and _PYGAME_OK
+        self._use_pyttsx3 = _PYTTSX3_OK
 
-        self._pyttsx3 = pyttsx3.init()
-        self._pyttsx3.setProperty('rate', config.TTS_RATE)
-        self._pyttsx3.setProperty('volume', config.TTS_VOLUME)
-        for v in self._pyttsx3.getProperty('voices'):
-            vid = (v.id + v.name).lower()
-            if any(k in vid for k in ('pt','portuguese','brasil','brazil')):
-                self._pyttsx3.setProperty('voice', v.id); break
+        self._pyttsx3 = None
+        if self._use_pyttsx3:
+            try:
+                self._pyttsx3 = pyttsx3.init()
+                self._pyttsx3.setProperty('rate', config.TTS_RATE)
+                self._pyttsx3.setProperty('volume', config.TTS_VOLUME)
+                for v in self._pyttsx3.getProperty('voices'):
+                    vid = (v.id + v.name).lower()
+                    if any(k in vid for k in ('pt', 'portuguese', 'brasil', 'brazil')):
+                        self._pyttsx3.setProperty('voice', v.id)
+                        break
+            except Exception as e:
+                self._pyttsx3 = None
+                self._use_pyttsx3 = False
+                print(f"⚠️  pyttsx3 indisponível: {e}")
 
         if self._use_edge:
             print(f"🗣️  Voz: Edge-TTS ({config.TTS_VOICE})")
-        else:
+        elif self._use_pyttsx3:
             print("🗣️  Voz: pyttsx3 (fallback)")
+        else:
+            print("🗣️  Voz: texto apenas (sem sintetizador instalado)")
 
     def speak(self, text: str):
         with self._lock:
@@ -80,6 +96,8 @@ class TTSEngine:
                 except Exception: pass
 
     def _speak_pyttsx3(self, text: str):
+        if not self._pyttsx3:
+            return
         try:
             self._pyttsx3.say(text)
             self._pyttsx3.runAndWait()

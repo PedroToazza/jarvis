@@ -124,16 +124,33 @@ Bata **duas palmas** rapidamente → Jarvis toca **Back in Black** do AC/DC no S
 
 ---
 
-## 📦 Compilar para .exe
+## 📦 Compilar para Executável
 
-Para gerar um executável standalone (não precisa de Python instalado):
+Para gerar um executável standalone (não precisa de Python instalado), use o script multiplataforma:
 
-```batch
-build.bat
+**Windows, macOS ou Linux:**
+
+```bash
+python build.py
 ```
 
-O arquivo `dist\Jarvis.exe` será gerado.  
-**Copie também o `.env`** para a mesma pasta do `.exe`, se quiser manter as chaves fora do código.
+O script vai:
+- ✅ Instalar PyInstaller automaticamente (se necessário)
+- ✅ Compilar um executável único para seu SO
+- ✅ Copiar arquivos de configuração para a pasta `dist/`
+
+**Resultado final:**
+- Windows: `dist\Jarvis.exe`
+- macOS: `dist/Jarvis`
+- Linux: `dist/Jarvis`
+
+**Próxima etapa:**
+1. Navegue para a pasta `dist/`
+2. Crie um arquivo `.env` (copie e edite `.env.example`)
+3. Preencha com suas credenciais da API
+4. Execute o Jarvis!
+
+> **Dica:** O arquivo `.env` deve estar na mesma pasta do executável para que as credenciais sejam carregadas.
 
 ---
 

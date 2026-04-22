@@ -17,8 +17,21 @@ def main():
         'status': 'idle', 'last_command': '', 'last_reply': '',
     }
 
-    from gui import JarvisApp
-    app = JarvisApp(shared_state)
+    try:
+        from gui import JarvisApp
+        app = JarvisApp(shared_state)
+    except ModuleNotFoundError as e:
+        if e.name not in ('tkinter', 'customtkinter'):
+            raise
+
+        print("⚠️  Interface gráfica indisponível. Iniciando em modo sem GUI.")
+        print("   No Fedora, instale com: sudo dnf install python3-tkinter")
+
+        class HeadlessApp:
+            def mainloop(self):
+                threading.Event().wait()
+
+        app = HeadlessApp()
 
     def _start_backend():
         try:
