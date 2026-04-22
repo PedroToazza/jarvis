@@ -11,17 +11,22 @@ Reconhece comandos por voz, detecta palmas e controla seu PC.
 jarvis/
 ├── main.py                  # ponto de entrada
 ├── config.py                # carrega configurações do ambiente/.env
+├── build.py                 # compila para executável (Windows/macOS/Linux)
+├── .env.example             # template de variáveis de ambiente
+├── .gitignore               # ignora .env e arquivos sensíveis
 ├── listener.py              # reconhecimento de voz (Vosk)
 ├── clap_detector.py         # detecção de palmas
-├── tts_engine.py            # síntese de voz (pyttsx3)
+├── tts_engine.py            # síntese de voz (pyttsx3/Edge-TTS)
+├── gui.py                   # interface gráfica (customtkinter)
 ├── commands/
 │   ├── __init__.py          # roteador de comandos
+│   ├── ai_parser.py         # parser IA (Gemini)
 │   ├── system_commands.py   # apps, volume, brilho, arquivos
 │   ├── web_commands.py      # Google, hora, data
-│   └── spotify_commands.py  # controle do Spotify
-├── download_model.py        # baixa o modelo de voz automaticamente
-├── requirements.txt
-└── build.bat                # compila para .exe
+│   ├── spotify_commands.py  # controle do Spotify
+│   └── outros...
+├── requirements.txt         # dependências Python
+└── README.md                # este arquivo
 ```
 
 ---
@@ -32,61 +37,39 @@ jarvis/
 
 - **Python 3.10+** — https://www.python.org/downloads/  
   *(marque "Add Python to PATH" na instalação)*
-- **Microsoft C++ Build Tools** — necessário para compilar o PyAudio  
-  https://visualstudio.microsoft.com/visual-cpp-build-tools/
+- **Git** — para clonar o repositório
 
-### 2. Instalar dependências
+**Dependências do sistema (opcional, para desenvolvimento local):**
+- **Windows:** Microsoft C++ Build Tools (https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+- **Linux:** `sudo dnf install python3-tkinter` (Fedora) ou `sudo apt install python3-tk` (Ubuntu)
+- **macOS:** já incluído
 
-Abra o terminal na pasta do projeto e execute:
+### 2. Instalar o Jarvis
 
-```batch
+```bash
+# Clonar o repositório
+git clone https://github.com/PedroToazza/jarvis.git
+cd jarvis
+
+# Instalar dependências
 pip install -r requirements.txt
+
+# Criar arquivo .env com suas credenciais
+cp .env.example .env
+# Abra .env e preencha com suas chaves de API
 ```
 
-> ⚠️ Se o `pyaudio` falhar, instale pelo pipwin:
-> ```batch
-> pip install pipwin
-> pipwin install pyaudio
-> ```
+### 3. Configurar as APIs
 
-### 3. Baixar o modelo de voz (português)
+Veja a seção **"🔐 Configuração de APIs (Segura)"** abaixo para obter suas chaves.
 
-```batch
-python download_model.py
-```
+### 4. Executar
 
-Isso baixa ~40 MB e cria a pasta `model/` automaticamente.
-
-### 4. Configurar o Spotify *(opcional)*
-
-> Sem o Spotify, todos os outros comandos funcionam normalmente.  
-> A detecção de palmas também funciona — mas não abrirá música.
-
-**Passo a passo:**
-
-1. Acesse https://developer.spotify.com/dashboard  
-2. Faça login com sua conta Spotify  
-3. Clique em **"Create app"**  
-4. Preencha qualquer nome e descrição  
-5. Em **Redirect URIs**, adicione: `http://localhost:8888/callback`  
-6. Copie o **Client ID** e o **Client Secret**  
-7. Crie um arquivo `.env` na raiz do projeto e coloque:
-
-```env
-SPOTIFY_CLIENT_ID=cole_seu_client_id_aqui
-SPOTIFY_CLIENT_SECRET=cole_seu_client_secret_aqui
-```
-
-Na primeira execução, uma janela do navegador abrirá pedindo autorização — clique em "Aceitar".
-
-> ⚠️ **Spotify Premium** é necessário para controle remoto de reprodução.  
-> Com conta gratuita, o Spotify já precisa estar tocando ativamente.
-
-### 5. Executar
-
-```batch
+```bash
 python main.py
 ```
+
+O Jarvis iniciará e estará pronto para receber comandos por voz!
 
 ---
 
@@ -154,6 +137,55 @@ O script vai:
 
 ---
 
+## 🔐 Configuração de APIs (Segura)
+
+As credenciais da API são carregadas de um arquivo `.env` **que não é versionado no Git** — mantendo suas chaves seguras!
+
+### Arquivo `.env` — como usar
+
+1. **Crie um arquivo `.env` na raiz do projeto:**
+
+```bash
+cp .env.example .env
+```
+
+2. **Edite o `.env` com suas credenciais reais:**
+
+```env
+# Google Gemini (IA)
+GEMINI_API_KEY=sua_chave_gemini_aqui
+
+# Spotify (opcional)
+SPOTIFY_CLIENT_ID=seu_client_id_aqui
+SPOTIFY_CLIENT_SECRET=seu_client_secret_aqui
+SPOTIFY_REDIRECT_URI=http://127.0.0.1:8888/callback
+```
+
+### Obter as Chaves
+
+**Google Gemini (IA gratuita — 1500 requisições/dia):**
+1. Acesse https://aistudio.google.com/apikey
+2. Clique em "Get API Key" / "Create API Key"
+3. Copie a chave e cole em `GEMINI_API_KEY` no `.env`
+
+**Spotify (Opcional — para controlar música):**
+1. Acesse https://developer.spotify.com/dashboard
+2. Faça login com sua conta Spotify
+3. Clique em "Create App"
+4. Preencha nome e descrição
+5. Em **Redirect URIs**, adicione: `http://localhost:8888/callback`
+6. Copie **Client ID** e **Client Secret**
+7. Cole em `SPOTIFY_CLIENT_ID` e `SPOTIFY_CLIENT_SECRET` no `.env`
+
+### ⚠️ Segurança
+
+- ✅ Arquivo `.env` está em `.gitignore` — **nunca será versionado**
+- ✅ Use `.env.example` como template
+- ✅ **Nunca** coloque credenciais direto no código
+- ✅ Se vazar uma chave, revogue no painel da API
+
+---
+
 ## ⚙️ Ajuste fino
 
 Edite `config.py` para personalizar:
@@ -178,15 +210,66 @@ Em `commands/system_commands.py`, adicione ao dicionário `KNOWN_APPS`:
 
 ## 🔧 Solução de problemas
 
+### Erro: `ModuleNotFoundError: No module named 'X'`
+
+Se receber um erro dizendo que um módulo não está instalado:
+
+| Módulo | Solução |
+|---|---|
+| `tkinter` | `sudo dnf install python3-tkinter` (Fedora/RHEL) ou `sudo apt install python3-tk` (Ubuntu) |
+| `pyaudio` | `pip install pipwin && pipwin install pyaudio` |
+| `pyttsx3` | `pip install pyttsx3` |
+| `vosk` | `pip install vosk` |
+| qualquer outro | `pip install <nome_do_modulo>` |
+
+**O Jarvis roda mesmo sem alguns módulos opcionais:**
+- Sem `tkinter` → executa em modo texto (sem interface gráfica)
+- Sem `pyttsx3` → responde apenas em texto (sem áudio local)
+- Sem `spotipy` → comandos Spotify não funcionam
+
+### Outros problemas
+
 | Problema | Solução |
 |---|---|
-| `No module named 'vosk'` | `pip install vosk` |
-| `No module named 'pyaudio'` | `pipwin install pyaudio` |
-| Modelo não encontrado | Execute `python download_model.py` |
+| Modelo de voz não encontrado | Execute `python download_model.py` |
 | Jarvis não entende bem | Fale mais devagar; verifique o microfone |
 | Palmas disparando por acidente | Aumente `CLAP_THRESHOLD` em `config.py` |
 | Spotify: "Premium required" | Necessário ter Spotify Premium |
 | Brilho não funciona | Alguns monitores externos não suportam |
+| Build.py não funciona | Execute `pip install pyinstaller` e tente novamente |
+
+---
+
+## 💾 Desenvolvimento Local
+
+### Clonar o repositório
+
+```bash
+git clone https://github.com/PedroToazza/jarvis.git
+cd jarvis
+pip install -r requirements.txt
+cp .env.example .env
+# Edite .env com suas credenciais
+python main.py
+```
+
+### Criar executável
+
+```bash
+python build.py
+```
+
+---
+
+## 📋 Checklist para novos usuários
+
+- [ ] Python 3.10+ instalado
+- [ ] Dependências instaladas: `pip install -r requirements.txt`
+- [ ] Arquivo `.env` criado (copie `.env.example`)
+- [ ] Credenciais das APIs preenchidas no `.env`
+- [ ] Modelo de voz baixado: `python download_model.py`
+- [ ] Teste com: `python main.py`
+- [ ] Build (opcional): `python build.py`
 
 ---
 
